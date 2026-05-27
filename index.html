@@ -19,10 +19,13 @@
   .card { background: #fff; border-radius: 14px; padding: 28px 16px; text-align: center; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
   .word { font-size: 32px; font-weight: 600; margin-bottom: 8px; color: #1c1c1e; }
   .ph { font-size: 14px; color: #8e8e93; }
+  .speak-btn { display: inline-flex; align-items: center; gap: 6px; margin-top: 14px; padding: 8px 18px; border-radius: 20px; border: 1.5px solid #d1d1d6; background: #f9f9f9; color: #636366; font-size: 14px; cursor: pointer; }
+  .speak-btn:active { background: #e5e5ea; }
+  .speak-btn svg { width: 16px; height: 16px; flex-shrink: 0; }
   .sentence { font-size: 17px; line-height: 1.8; text-align: left; color: #1c1c1e; }
   .blank { display: inline-block; min-width: 80px; border-bottom: 2.5px solid #34c759; color: #34c759; font-weight: 600; text-align: center; padding: 0 4px; }
   .opts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
-  .opt { background: #fff; border: 1.5px solid #d1d1d6; border-radius: 10px; padding: 16px 8px; font-size: 15px; color: #1c1c1e; cursor: pointer; text-align: center; line-height: 1.4; min-height: 56px; display: flex; align-items: center; justify-content: center; transition: all 0.12s; box-shadow: 0 1px 2px rgba(0,0,0,0.06); }
+  .opt { background: #fff; border: 1.5px solid #d1d1d6; border-radius: 10px; padding: 16px 8px; font-size: 15px; color: #1c1c1e; cursor: pointer; text-align: center; line-height: 1.4; min-height: 56px; display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 2px rgba(0,0,0,0.06); }
   .opt:active { transform: scale(0.97); }
   .opt.correct { background: #f0fdf4; border-color: #34c759; color: #15803d; }
   .opt.wrong { background: #fff1f2; border-color: #f87171; color: #991b1b; }
@@ -30,7 +33,7 @@
   .fb { font-size: 14px; min-height: 24px; text-align: center; color: #8e8e93; margin-bottom: 10px; line-height: 1.6; }
   .fb.ok { color: #15803d; font-weight: 600; }
   .fb.no { color: #991b1b; font-weight: 600; }
-  input[type="text"] { width: 100%; padding: 15px; font-size: 17px; border: 1.5px solid #d1d1d6; border-radius: 10px; background: #fff; color: #1c1c1e; outline: none; margin-bottom: 10px; text-align: center; appearance: none; -webkit-appearance: none; }
+  input[type="text"] { width: 100%; padding: 15px; font-size: 17px; border: 1.5px solid #d1d1d6; border-radius: 10px; background: #fff; color: #1c1c1e; outline: none; margin-bottom: 10px; text-align: center; -webkit-appearance: none; }
   input[type="text"]:focus { border-color: #34c759; }
   .btn-confirm { display: block; width: 100%; padding: 15px; border-radius: 10px; border: none; background: #34c759; color: #fff; font-size: 16px; font-weight: 600; cursor: pointer; margin-bottom: 10px; }
   .btn-confirm:active { opacity: 0.85; }
@@ -63,42 +66,42 @@
 
 <script>
 var V=[
-  {en:"vacation",zh:"假期",ph:"veˈkeʃən",s:"We went on a ___ to Japan.",t:"vacation"},
-  {en:"history",zh:"歷史",ph:"ˈhɪstərɪ",s:"She loves reading about world ___.",t:"history"},
-  {en:"uniform",zh:"制服",ph:"ˈjunəˌfɔrm",s:"All students must wear a school ___.",t:"uniform"},
-  {en:"the public",zh:"民眾",ph:"ðəˈpʌblɪk",s:"The park is open to ___ every day.",t:"the public"},
-  {en:"glad",zh:"高興的",ph:"glæd",s:"I am ___ to hear you passed the test.",t:"glad"},
-  {en:"perhaps",zh:"也許",ph:"pəˈhæps",s:"___ we can meet again next week.",t:"Perhaps"},
-  {en:"key chain",zh:"鑰匙圈",ph:"ˈkiˌtʃen",s:"She bought a cute ___ at the shop.",t:"key chain"},
-  {en:"crow",zh:"烏鴉",ph:"kro",s:"A ___ sat on the fence and made noise.",t:"crow"},
-  {en:"raven",zh:"渡鴉",ph:"ˈrevən",s:"The ___ in the story was a mystery symbol.",t:"raven"},
-  {en:"mail carrier",zh:"郵差",ph:"ˈmel ˌkærɪər",s:"The ___ delivered a package to our house.",t:"mail carrier"},
-  {en:"voice actor",zh:"配音員",ph:"vɔɪs ˈæktər",s:"The ___ gave life to the cartoon character.",t:"voice actor"},
-  {en:"driver",zh:"駕駛員",ph:"ˈdraɪvər",s:"The bus ___ stopped to let passengers board.",t:"driver"},
-  {en:"engineer",zh:"工程師",ph:"ˌɛndʒəˈnɪr",s:"The ___ designed a new bridge for the city.",t:"engineer"},
-  {en:"comic",zh:"漫畫",ph:"ˈkɑmɪk",s:"He reads a ___ book every weekend.",t:"comic"},
-  {en:"writer",zh:"作家",ph:"ˈraɪtər",s:"She is a famous ___ known for mystery novels.",t:"writer"},
-  {en:"soldier",zh:"軍人",ph:"ˈsoldʒər",s:"The brave ___ protected the town from danger.",t:"soldier"},
-  {en:"dark",zh:"深色的",ph:"dɑrk",s:"She wore a ___ blue dress to the party.",t:"dark"},
-  {en:"ugly",zh:"醜的",ph:"ˈʌɡlɪ",s:"The old building looked ___ after the storm.",t:"ugly"},
-  {en:"however",zh:"然而",ph:"haʊˈɛvər",s:"The test was hard. ___, most students passed.",t:"However"},
-  {en:"follow",zh:"跟隨",ph:"ˈfɑlo",s:"Please ___ the instructions carefully.",t:"follow"},
-  {en:"quite",zh:"很；相當",ph:"kwaɪt",s:"The movie was ___ interesting from start to end.",t:"quite"},
-  {en:"healthy",zh:"健康的",ph:"ˈhɛlθɪ",s:"Eating vegetables every day keeps you ___.",t:"healthy"},
-  {en:"part",zh:"一部分",ph:"pɑrt",s:"This is only one ___ of the whole story.",t:"part"},
-  {en:"ground",zh:"地面",ph:"graʊnd",s:"The children sat on the ___ and played.",t:"ground"},
-  {en:"stair",zh:"樓梯",ph:"stɛr",s:"He climbed the ___ to the second floor.",t:"stair"},
-  {en:"high",zh:"高的",ph:"haɪ",s:"The mountain is very ___ and hard to climb.",t:"high"},
-  {en:"wall",zh:"牆壁",ph:"wɔl",s:"She painted a picture on the ___ of her room.",t:"wall"},
-  {en:"legend",zh:"傳說",ph:"ˈlɛdʒənd",s:"The old man told us a ___ about a dragon.",t:"legend"},
-  {en:"kingdom",zh:"王國",ph:"ˈkɪŋdəm",s:"The king ruled over a great ___ for many years.",t:"kingdom"},
-  {en:"keeper",zh:"飼養者",ph:"ˈkipər",s:"The zoo ___ feeds the animals every morning.",t:"keeper"},
-  {en:"protector",zh:"保護者",ph:"prəˈtɛktər",s:"The knight was the ___ of the village.",t:"protector"},
-  {en:"tradition",zh:"傳統",ph:"trəˈdɪʃən",s:"Giving red envelopes is a Chinese New Year ___.",t:"tradition"},
-  {en:"honor",zh:"榮譽",ph:"ˈɑnər",s:"It is a great ___ to win this award.",t:"honor"},
-  {en:"leave",zh:"離開",ph:"liv",s:"We must ___ the house before eight o'clock.",t:"leave"},
-  {en:"order",zh:"命令",ph:"ˈɔrdər",s:"The general gave an ___ to advance.",t:"order"},
-  {en:"full-time",zh:"全職的",ph:"ˈfʊlˈtaɪm",s:"She got a ___ job at a local school.",t:"full-time"}
+  {en:"vacation",zh:"假期",s:"We went on a ___ to Japan.",t:"vacation"},
+  {en:"history",zh:"歷史",s:"She loves reading about world ___.",t:"history"},
+  {en:"uniform",zh:"制服",s:"All students must wear a school ___.",t:"uniform"},
+  {en:"the public",zh:"民眾",s:"The park is open to ___ every day.",t:"the public"},
+  {en:"glad",zh:"高興的",s:"I am ___ to hear you passed the test.",t:"glad"},
+  {en:"perhaps",zh:"也許",s:"___ we can meet again next week.",t:"Perhaps"},
+  {en:"key chain",zh:"鑰匙圈",s:"She bought a cute ___ at the shop.",t:"key chain"},
+  {en:"crow",zh:"烏鴉",s:"A ___ sat on the fence and made noise.",t:"crow"},
+  {en:"raven",zh:"渡鴉",s:"The ___ in the story was a mystery symbol.",t:"raven"},
+  {en:"mail carrier",zh:"郵差",s:"The ___ delivered a package to our house.",t:"mail carrier"},
+  {en:"voice actor",zh:"配音員",s:"The ___ gave life to the cartoon character.",t:"voice actor"},
+  {en:"driver",zh:"駕駛員",s:"The bus ___ stopped to let passengers board.",t:"driver"},
+  {en:"engineer",zh:"工程師",s:"The ___ designed a new bridge for the city.",t:"engineer"},
+  {en:"comic",zh:"漫畫",s:"He reads a ___ book every weekend.",t:"comic"},
+  {en:"writer",zh:"作家",s:"She is a famous ___ known for mystery novels.",t:"writer"},
+  {en:"soldier",zh:"軍人",s:"The brave ___ protected the town from danger.",t:"soldier"},
+  {en:"dark",zh:"深色的",s:"She wore a ___ blue dress to the party.",t:"dark"},
+  {en:"ugly",zh:"醜的",s:"The old building looked ___ after the storm.",t:"ugly"},
+  {en:"however",zh:"然而",s:"The test was hard. ___, most students passed.",t:"However"},
+  {en:"follow",zh:"跟隨",s:"Please ___ the instructions carefully.",t:"follow"},
+  {en:"quite",zh:"很；相當",s:"The movie was ___ interesting from start to end.",t:"quite"},
+  {en:"healthy",zh:"健康的",s:"Eating vegetables every day keeps you ___.",t:"healthy"},
+  {en:"part",zh:"一部分",s:"This is only one ___ of the whole story.",t:"part"},
+  {en:"ground",zh:"地面",s:"The children sat on the ___ and played.",t:"ground"},
+  {en:"stair",zh:"樓梯",s:"He climbed the ___ to the second floor.",t:"stair"},
+  {en:"high",zh:"高的",s:"The mountain is very ___ and hard to climb.",t:"high"},
+  {en:"wall",zh:"牆壁",s:"She painted a picture on the ___ of her room.",t:"wall"},
+  {en:"legend",zh:"傳說",s:"The old man told us a ___ about a dragon.",t:"legend"},
+  {en:"kingdom",zh:"王國",s:"The king ruled over a great ___ for many years.",t:"kingdom"},
+  {en:"keeper",zh:"飼養者",s:"The zoo ___ feeds the animals every morning.",t:"keeper"},
+  {en:"protector",zh:"保護者",s:"The knight was the ___ of the village.",t:"protector"},
+  {en:"tradition",zh:"傳統",s:"Giving red envelopes is a Chinese New Year ___.",t:"tradition"},
+  {en:"honor",zh:"榮譽",s:"It is a great ___ to win this award.",t:"honor"},
+  {en:"leave",zh:"離開",s:"We must ___ the house before eight o'clock.",t:"leave"},
+  {en:"order",zh:"命令",s:"The general gave an ___ to advance.",t:"order"},
+  {en:"full-time",zh:"全職的",s:"She got a ___ job at a local school.",t:"full-time"}
 ];
 
 var mode="mc", queue=[], idx=0, score=0, answered=false;
@@ -111,6 +114,17 @@ function shuffle(a){
   }
   return b;
 }
+
+function speak(word){
+  if(!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  var u=new SpeechSynthesisUtterance(word);
+  u.lang="en-US";
+  u.rate=0.9;
+  window.speechSynthesis.speak(u);
+}
+
+var speakerIcon='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>';
 
 function init(){
   queue=shuffle(V.slice());
@@ -135,31 +149,45 @@ function updateHeader(){
   document.getElementById("barfill").style.width=Math.round(idx/total*100)+"%";
 }
 
+function speakBtn(word){
+  return "<button class='speak-btn' onclick='speak(\""+esc(word)+"\")'>" + speakerIcon + "發音</button>";
+}
+
 function renderAll(){
   updateHeader();
   if(idx>=queue.length){ renderDone(); return; }
   var it=queue[idx];
   var area=document.getElementById("qarea");
 
-  if(mode==="mc"||mode==="zh"){
-    var key=mode==="mc"?"zh":"en";
+  if(mode==="mc"){
     var dis=shuffle(V.filter(function(v){return v.en!==it.en;})).slice(0,3);
     var opts=shuffle([it].concat(dis));
-    var promptHTML=mode==="mc"
-      ?"<div class='word'>"+it.en+"</div><div class='ph'>["+it.ph+"]</div>"
-      :"<div class='word'>"+it.zh+"</div>";
-    var html="<div class='card'>"+promptHTML+"</div><div class='opts'>";
+    var html="<div class='card'>"
+      +"<div class='word'>"+it.en+"</div>"
+      +speakBtn(it.en)
+      +"</div><div class='opts'>";
     for(var i=0;i<opts.length;i++){
-      var v=esc(opts[i][key]);
-      var c=esc(it[key]);
-      html+="<button class='opt' onclick='chkMC(this,\""+v+"\",\""+c+"\")'>" +opts[i][key]+"</button>";
+      var v=esc(opts[i].zh); var c=esc(it.zh);
+      html+="<button class='opt' onclick='chkMC(this,\""+v+"\",\""+c+"\")'>" +opts[i].zh+"</button>";
+    }
+    html+="</div><div class='fb' id='fb'></div>";
+    area.innerHTML=html;
+    answered=false;
+
+  } else if(mode==="zh"){
+    var dis=shuffle(V.filter(function(v){return v.en!==it.en;})).slice(0,3);
+    var opts=shuffle([it].concat(dis));
+    var html="<div class='card'><div class='word'>"+it.zh+"</div></div><div class='opts'>";
+    for(var i=0;i<opts.length;i++){
+      var v=esc(opts[i].en); var c=esc(it.en);
+      html+="<button class='opt' onclick='chkMCSpeak(this,\""+v+"\",\""+c+"\")'>" +opts[i].en+"</button>";
     }
     html+="</div><div class='fb' id='fb'></div>";
     area.innerHTML=html;
     answered=false;
 
   } else if(mode==="type"){
-    var html="<div class='card'><div class='word'>"+it.zh+"</div><div class='ph'>["+it.ph+"]</div></div>"
+    var html="<div class='card'><div class='word'>"+it.zh+"</div></div>"
       +"<input type='text' id='ti' placeholder='輸入英文...' autocomplete='off' autocorrect='off' autocapitalize='none' spellcheck='false' onkeyup='if(event.keyCode===13)subType()' />"
       +"<button class='btn-confirm' onclick='subType()'>確認</button>"
       +"<div class='fb' id='fb'></div>"
@@ -174,10 +202,8 @@ function renderAll(){
     var html="<div class='card'><div class='sentence'>"+sentHTML+"</div></div>"
       +"<div class='hint'>選出正確的單字填入空格</div><div class='opts'>";
     for(var i=0;i<opts.length;i++){
-      var ve=esc(opts[i].en);
-      var ce=esc(it.en);
-      var te=esc(it.t);
-      var se=esc(it.s);
+      var ve=esc(opts[i].en); var ce=esc(it.en);
+      var te=esc(it.t); var se=esc(it.s);
       html+="<button class='opt' onclick='chkCloze(this,\""+ve+"\",\""+ce+"\",\""+te+"\",\""+se+"\")'>" +opts[i].en+"</button>";
     }
     html+="</div><div class='fb' id='fb'></div>";
@@ -212,9 +238,16 @@ function chkMC(btn,chosen,correct){
   }
 }
 
+function chkMCSpeak(btn,chosen,correct){
+  if(answered)return;
+  speak(chosen);
+  chkMC(btn,chosen,correct);
+}
+
 function chkCloze(btn,chosen,correct,t,s){
   if(answered)return;
   answered=true;
+  speak(chosen);
   var btns=document.querySelectorAll(".opt");
   for(var i=0;i<btns.length;i++){
     btns[i].disabled=true;
@@ -247,10 +280,11 @@ function subType(){
   var nb=document.getElementById("nb");
   if(typed===correct){
     score++;
+    speak(queue[idx].en);
     el.style.borderColor="#34c759";
     fb.textContent="✓ 拼對了！"; fb.className="fb ok";
     document.getElementById("scoredisp").textContent="得分："+score;
-    setTimeout(function(){idx++;answered=false;renderAll();},900);
+    setTimeout(function(){idx++;answered=false;renderAll();},1000);
   } else {
     el.style.borderColor="#f87171";
     fb.textContent="✗ 正確答案是「"+queue[idx].en+"」"; fb.className="fb no";
