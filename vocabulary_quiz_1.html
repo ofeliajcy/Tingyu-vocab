@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>單字練習</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif; background: #f2f2f7; color: #1c1c1e; min-height: 100vh; }
+  .wrap { max-width: 480px; margin: 0 auto; padding: 16px; }
+  h1 { font-size: 20px; font-weight: 600; text-align: center; margin: 12px 0 16px; color: #1c1c1e; }
+  .mode-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+  .tab { border: 1.5px solid #d1d1d6; border-radius: 10px; padding: 12px 6px; font-size: 14px; font-weight: 500; color: #636366; background: #fff; cursor: pointer; text-align: center; transition: all 0.15s; }
+  .tab.active { border-color: #34c759; background: #f0fdf4; color: #15803d; }
+  .meta { display: flex; justify-content: space-between; font-size: 13px; color: #8e8e93; margin-bottom: 8px; }
+  .bar-bg { height: 5px; background: #e5e5ea; border-radius: 3px; margin-bottom: 18px; }
+  .bar-fill { height: 5px; background: #34c759; border-radius: 3px; transition: width 0.3s; }
+  .card { background: #fff; border-radius: 14px; padding: 28px 16px; text-align: center; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+  .word { font-size: 32px; font-weight: 600; margin-bottom: 8px; color: #1c1c1e; }
+  .ph { font-size: 14px; color: #8e8e93; }
+  .sentence { font-size: 17px; line-height: 1.8; text-align: left; color: #1c1c1e; }
+  .blank { display: inline-block; min-width: 80px; border-bottom: 2.5px solid #34c759; color: #34c759; font-weight: 600; text-align: center; padding: 0 4px; }
+  .opts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+  .opt { background: #fff; border: 1.5px solid #d1d1d6; border-radius: 10px; padding: 16px 8px; font-size: 15px; color: #1c1c1e; cursor: pointer; text-align: center; line-height: 1.4; min-height: 56px; display: flex; align-items: center; justify-content: center; transition: all 0.12s; box-shadow: 0 1px 2px rgba(0,0,0,0.06); }
+  .opt:active { transform: scale(0.97); }
+  .opt.correct { background: #f0fdf4; border-color: #34c759; color: #15803d; }
+  .opt.wrong { background: #fff1f2; border-color: #f87171; color: #991b1b; }
+  .opt:disabled { cursor: default; }
+  .fb { font-size: 14px; min-height: 24px; text-align: center; color: #8e8e93; margin-bottom: 10px; line-height: 1.6; }
+  .fb.ok { color: #15803d; font-weight: 600; }
+  .fb.no { color: #991b1b; font-weight: 600; }
+  input[type="text"] { width: 100%; padding: 15px; font-size: 17px; border: 1.5px solid #d1d1d6; border-radius: 10px; background: #fff; color: #1c1c1e; outline: none; margin-bottom: 10px; text-align: center; appearance: none; -webkit-appearance: none; }
+  input[type="text"]:focus { border-color: #34c759; }
+  .btn-confirm { display: block; width: 100%; padding: 15px; border-radius: 10px; border: none; background: #34c759; color: #fff; font-size: 16px; font-weight: 600; cursor: pointer; margin-bottom: 10px; }
+  .btn-confirm:active { opacity: 0.85; }
+  .btn-next { display: block; width: 100%; padding: 15px; border-radius: 10px; border: 1.5px solid #d1d1d6; background: #fff; color: #1c1c1e; font-size: 15px; cursor: pointer; }
+  .btn-next:active { background: #f2f2f7; }
+  .summary { text-align: center; padding: 40px 0; }
+  .score-num { font-size: 64px; font-weight: 700; color: #34c759; }
+  .score-total { font-size: 22px; color: #8e8e93; }
+  .score-msg { font-size: 16px; color: #636366; margin: 10px 0 28px; }
+  .btn-retry { padding: 15px 40px; border-radius: 10px; border: 1.5px solid #d1d1d6; background: #fff; color: #1c1c1e; font-size: 16px; font-weight: 500; cursor: pointer; }
+  .hint { font-size: 12px; color: #aeaeb2; text-align: center; margin-bottom: 10px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>單字練習</h1>
+  <div class="mode-grid" id="tabs">
+    <button class="tab active" onclick="setMode('mc')">選擇題<br><span style="font-size:11px;font-weight:400;opacity:0.7">看英選中</span></button>
+    <button class="tab" onclick="setMode('zh')">中翻英<br><span style="font-size:11px;font-weight:400;opacity:0.7">看中選英</span></button>
+    <button class="tab" onclick="setMode('type')">拼字<br><span style="font-size:11px;font-weight:400;opacity:0.7">輸入英文</span></button>
+    <button class="tab" onclick="setMode('cloze')">克漏字<br><span style="font-size:11px;font-weight:400;opacity:0.7">句子填空</span></button>
+  </div>
+  <div class="meta">
+    <span id="counter">題目 1 / 36</span>
+    <span id="scoredisp">得分：0</span>
+  </div>
+  <div class="bar-bg"><div class="bar-fill" id="barfill" style="width:0%"></div></div>
+  <div id="qarea"></div>
+</div>
+
+<script>
+var V=[
+  {en:"vacation",zh:"假期",ph:"veˈkeʃən",s:"We went on a ___ to Japan.",t:"vacation"},
+  {en:"history",zh:"歷史",ph:"ˈhɪstərɪ",s:"She loves reading about world ___.",t:"history"},
+  {en:"uniform",zh:"制服",ph:"ˈjunəˌfɔrm",s:"All students must wear a school ___.",t:"uniform"},
+  {en:"the public",zh:"民眾",ph:"ðəˈpʌblɪk",s:"The park is open to ___ every day.",t:"the public"},
+  {en:"glad",zh:"高興的",ph:"glæd",s:"I am ___ to hear you passed the test.",t:"glad"},
+  {en:"perhaps",zh:"也許",ph:"pəˈhæps",s:"___ we can meet again next week.",t:"Perhaps"},
+  {en:"key chain",zh:"鑰匙圈",ph:"ˈkiˌtʃen",s:"She bought a cute ___ at the shop.",t:"key chain"},
+  {en:"crow",zh:"烏鴉",ph:"kro",s:"A ___ sat on the fence and made noise.",t:"crow"},
+  {en:"raven",zh:"渡鴉",ph:"ˈrevən",s:"The ___ in the story was a mystery symbol.",t:"raven"},
+  {en:"mail carrier",zh:"郵差",ph:"ˈmel ˌkærɪər",s:"The ___ delivered a package to our house.",t:"mail carrier"},
+  {en:"voice actor",zh:"配音員",ph:"vɔɪs ˈæktər",s:"The ___ gave life to the cartoon character.",t:"voice actor"},
+  {en:"driver",zh:"駕駛員",ph:"ˈdraɪvər",s:"The bus ___ stopped to let passengers board.",t:"driver"},
+  {en:"engineer",zh:"工程師",ph:"ˌɛndʒəˈnɪr",s:"The ___ designed a new bridge for the city.",t:"engineer"},
+  {en:"comic",zh:"漫畫",ph:"ˈkɑmɪk",s:"He reads a ___ book every weekend.",t:"comic"},
+  {en:"writer",zh:"作家",ph:"ˈraɪtər",s:"She is a famous ___ known for mystery novels.",t:"writer"},
+  {en:"soldier",zh:"軍人",ph:"ˈsoldʒər",s:"The brave ___ protected the town from danger.",t:"soldier"},
+  {en:"dark",zh:"深色的",ph:"dɑrk",s:"She wore a ___ blue dress to the party.",t:"dark"},
+  {en:"ugly",zh:"醜的",ph:"ˈʌɡlɪ",s:"The old building looked ___ after the storm.",t:"ugly"},
+  {en:"however",zh:"然而",ph:"haʊˈɛvər",s:"The test was hard. ___, most students passed.",t:"However"},
+  {en:"follow",zh:"跟隨",ph:"ˈfɑlo",s:"Please ___ the instructions carefully.",t:"follow"},
+  {en:"quite",zh:"很；相當",ph:"kwaɪt",s:"The movie was ___ interesting from start to end.",t:"quite"},
+  {en:"healthy",zh:"健康的",ph:"ˈhɛlθɪ",s:"Eating vegetables every day keeps you ___.",t:"healthy"},
+  {en:"part",zh:"一部分",ph:"pɑrt",s:"This is only one ___ of the whole story.",t:"part"},
+  {en:"ground",zh:"地面",ph:"graʊnd",s:"The children sat on the ___ and played.",t:"ground"},
+  {en:"stair",zh:"樓梯",ph:"stɛr",s:"He climbed the ___ to the second floor.",t:"stair"},
+  {en:"high",zh:"高的",ph:"haɪ",s:"The mountain is very ___ and hard to climb.",t:"high"},
+  {en:"wall",zh:"牆壁",ph:"wɔl",s:"She painted a picture on the ___ of her room.",t:"wall"},
+  {en:"legend",zh:"傳說",ph:"ˈlɛdʒənd",s:"The old man told us a ___ about a dragon.",t:"legend"},
+  {en:"kingdom",zh:"王國",ph:"ˈkɪŋdəm",s:"The king ruled over a great ___ for many years.",t:"kingdom"},
+  {en:"keeper",zh:"飼養者",ph:"ˈkipər",s:"The zoo ___ feeds the animals every morning.",t:"keeper"},
+  {en:"protector",zh:"保護者",ph:"prəˈtɛktər",s:"The knight was the ___ of the village.",t:"protector"},
+  {en:"tradition",zh:"傳統",ph:"trəˈdɪʃən",s:"Giving red envelopes is a Chinese New Year ___.",t:"tradition"},
+  {en:"honor",zh:"榮譽",ph:"ˈɑnər",s:"It is a great ___ to win this award.",t:"honor"},
+  {en:"leave",zh:"離開",ph:"liv",s:"We must ___ the house before eight o'clock.",t:"leave"},
+  {en:"order",zh:"命令",ph:"ˈɔrdər",s:"The general gave an ___ to advance.",t:"order"},
+  {en:"full-time",zh:"全職的",ph:"ˈfʊlˈtaɪm",s:"She got a ___ job at a local school.",t:"full-time"}
+];
+
+var mode="mc", queue=[], idx=0, score=0, answered=false;
+
+function shuffle(a){
+  var b=a.slice();
+  for(var i=b.length-1;i>0;i--){
+    var j=Math.floor(Math.random()*(i+1));
+    var tmp=b[i]; b[i]=b[j]; b[j]=tmp;
+  }
+  return b;
+}
+
+function init(){
+  queue=shuffle(V.slice());
+  idx=0; score=0; answered=false;
+  renderAll();
+}
+
+function setMode(m){
+  mode=m;
+  var keys=["mc","zh","type","cloze"];
+  var tabs=document.getElementById("tabs").children;
+  for(var i=0;i<tabs.length;i++){
+    tabs[i].className="tab"+(mode===keys[i]?" active":"");
+  }
+  init();
+}
+
+function updateHeader(){
+  var total=queue.length;
+  document.getElementById("counter").textContent="題目 "+(Math.min(idx,total-1)+1)+" / "+total;
+  document.getElementById("scoredisp").textContent="得分："+score;
+  document.getElementById("barfill").style.width=Math.round(idx/total*100)+"%";
+}
+
+function renderAll(){
+  updateHeader();
+  if(idx>=queue.length){ renderDone(); return; }
+  var it=queue[idx];
+  var area=document.getElementById("qarea");
+
+  if(mode==="mc"||mode==="zh"){
+    var key=mode==="mc"?"zh":"en";
+    var dis=shuffle(V.filter(function(v){return v.en!==it.en;})).slice(0,3);
+    var opts=shuffle([it].concat(dis));
+    var promptHTML=mode==="mc"
+      ?"<div class='word'>"+it.en+"</div><div class='ph'>["+it.ph+"]</div>"
+      :"<div class='word'>"+it.zh+"</div>";
+    var html="<div class='card'>"+promptHTML+"</div><div class='opts'>";
+    for(var i=0;i<opts.length;i++){
+      var v=esc(opts[i][key]);
+      var c=esc(it[key]);
+      html+="<button class='opt' onclick='chkMC(this,\""+v+"\",\""+c+"\")'>" +opts[i][key]+"</button>";
+    }
+    html+="</div><div class='fb' id='fb'></div>";
+    area.innerHTML=html;
+    answered=false;
+
+  } else if(mode==="type"){
+    var html="<div class='card'><div class='word'>"+it.zh+"</div><div class='ph'>["+it.ph+"]</div></div>"
+      +"<input type='text' id='ti' placeholder='輸入英文...' autocomplete='off' autocorrect='off' autocapitalize='none' spellcheck='false' onkeyup='if(event.keyCode===13)subType()' />"
+      +"<button class='btn-confirm' onclick='subType()'>確認</button>"
+      +"<div class='fb' id='fb'></div>"
+      +"<button class='btn-next' id='nb' onclick='nxt()' style='display:none'>下一題 →</button>";
+    area.innerHTML=html;
+    answered=false;
+
+  } else {
+    var sentHTML=it.s.replace("___","<span class='blank'>___</span>");
+    var dis=shuffle(V.filter(function(v){return v.en!==it.en;})).slice(0,3);
+    var opts=shuffle([it].concat(dis));
+    var html="<div class='card'><div class='sentence'>"+sentHTML+"</div></div>"
+      +"<div class='hint'>選出正確的單字填入空格</div><div class='opts'>";
+    for(var i=0;i<opts.length;i++){
+      var ve=esc(opts[i].en);
+      var ce=esc(it.en);
+      var te=esc(it.t);
+      var se=esc(it.s);
+      html+="<button class='opt' onclick='chkCloze(this,\""+ve+"\",\""+ce+"\",\""+te+"\",\""+se+"\")'>" +opts[i].en+"</button>";
+    }
+    html+="</div><div class='fb' id='fb'></div>";
+    area.innerHTML=html;
+    answered=false;
+  }
+}
+
+function esc(s){
+  return s.replace(/\\/g,"\\\\").replace(/"/g,"&quot;").replace(/'/g,"\\'");
+}
+
+function chkMC(btn,chosen,correct){
+  if(answered)return;
+  answered=true;
+  var btns=document.querySelectorAll(".opt");
+  for(var i=0;i<btns.length;i++){
+    btns[i].disabled=true;
+    var v=btns[i].textContent.trim();
+    if(v===correct){ btns[i].className="opt correct"; }
+    else if(v===chosen&&v!==correct){ btns[i].className="opt wrong"; }
+  }
+  var fb=document.getElementById("fb");
+  if(chosen===correct){
+    score++;
+    fb.textContent="✓ 答對了！"; fb.className="fb ok";
+    document.getElementById("scoredisp").textContent="得分："+score;
+    setTimeout(function(){idx++;answered=false;renderAll();},900);
+  } else {
+    fb.textContent="✗ 正確答案是「"+correct+"」"; fb.className="fb no";
+    setTimeout(function(){idx++;answered=false;renderAll();},1700);
+  }
+}
+
+function chkCloze(btn,chosen,correct,t,s){
+  if(answered)return;
+  answered=true;
+  var btns=document.querySelectorAll(".opt");
+  for(var i=0;i<btns.length;i++){
+    btns[i].disabled=true;
+    var v=btns[i].textContent.trim();
+    if(v===correct){ btns[i].className="opt correct"; }
+    else if(v===chosen&&v!==correct){ btns[i].className="opt wrong"; }
+  }
+  var filled=s.replace("___","<strong style='color:#15803d'>"+t+"</strong>");
+  var fb=document.getElementById("fb");
+  if(chosen===correct){
+    score++;
+    fb.innerHTML="✓ 答對了！<br>"+filled; fb.className="fb ok";
+    document.getElementById("scoredisp").textContent="得分："+score;
+    setTimeout(function(){idx++;answered=false;renderAll();},1600);
+  } else {
+    fb.innerHTML="✗ 正確答案：<br>"+filled; fb.className="fb no";
+    setTimeout(function(){idx++;answered=false;renderAll();},2200);
+  }
+}
+
+function subType(){
+  if(answered)return;
+  var el=document.getElementById("ti");
+  if(!el)return;
+  var typed=el.value.trim().toLowerCase();
+  var correct=queue[idx].en.toLowerCase();
+  answered=true;
+  el.disabled=true;
+  var fb=document.getElementById("fb");
+  var nb=document.getElementById("nb");
+  if(typed===correct){
+    score++;
+    el.style.borderColor="#34c759";
+    fb.textContent="✓ 拼對了！"; fb.className="fb ok";
+    document.getElementById("scoredisp").textContent="得分："+score;
+    setTimeout(function(){idx++;answered=false;renderAll();},900);
+  } else {
+    el.style.borderColor="#f87171";
+    fb.textContent="✗ 正確答案是「"+queue[idx].en+"」"; fb.className="fb no";
+    if(nb) nb.style.display="block";
+  }
+}
+
+function nxt(){ idx++; answered=false; renderAll(); }
+
+function renderDone(){
+  var total=queue.length;
+  var pct=Math.round(score/total*100);
+  var msg=pct>=90?"太厲害了！":pct>=70?"表現不錯！":"繼續加油！";
+  document.getElementById("barfill").style.width="100%";
+  document.getElementById("qarea").innerHTML=
+    "<div class='summary'>"
+    +"<div><span class='score-num'>"+score+"</span><span class='score-total'> / "+total+"</span></div>"
+    +"<div class='score-msg'>答對率 "+pct+"%　"+msg+"</div>"
+    +"<button class='btn-retry' onclick='init()'>再練一次</button>"
+    +"</div>";
+}
+
+init();
+</script>
+</body>
+</html>
